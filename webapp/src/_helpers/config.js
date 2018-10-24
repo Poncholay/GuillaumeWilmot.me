@@ -1,3 +1,5 @@
 export const config = {
-    BASE_URL: process.env.PUBLIC_URL,
+    BASE_URL: '/',
+    PORTFOLIO: '/portfolio',
+    POWERLIFTING: '/doievenlift',
 };

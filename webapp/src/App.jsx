@@ -6,7 +6,9 @@ import './scss/App.scss';
 import NoMatch from "./containers/NoMatch";
 import {Route, Switch, withRouter} from 'react-router-dom';
 import PropTypes from 'prop-types';
-import {LandingPage} from "./containers/LandingPage/LandingPage";
+import {Portfolio} from "./containers/Portfolio/Portfolio";
+import {Powerlifting} from "./containers/Powerlifting/Powerlifting";
+import {Redirect} from "react-router";
 
 class App extends Component {
 
@@ -15,18 +17,19 @@ class App extends Component {
 
         history.listen((location, action) => {
             // clear alert on location change
-            window.ga('send', 'pageview', location.pathname);
+            // window.ga('send', 'pageview', location.pathname);
         });
     }
 
     render() {
-        console.log("Teub");
         return (
             <section className="content">
                 <Switch>
-                    <Route exact path={`${config.BASE_URL}`} component={LandingPage}/>
+                    <Route exact path={`${config.PORTFOLIO}`} component={Portfolio}/>
+                    <Route exact path={`${config.POWERLIFTING}`} component={Powerlifting}/>
+                    <Route exact path={`${config.BASE_URL}`} component={() => <Redirect to={`${config.PORTFOLIO}`} />}/>
                     <Route component={NoMatch}/>
-                </ Switch>
+                </Switch>
             </section>
         );
     }
