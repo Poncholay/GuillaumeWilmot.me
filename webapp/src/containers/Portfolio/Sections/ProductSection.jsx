@@ -1,17 +1,12 @@
 import React from "react";
-// @material-ui/core components
 import withStyles from "@material-ui/core/styles/withStyles";
-// @material-ui/icons
 import Chat from "@material-ui/icons/Chat";
 import VerifiedUser from "@material-ui/icons/VerifiedUser";
 import Fingerprint from "@material-ui/icons/Fingerprint";
-// core components
 import GridContainer from "../../../components/MaterialKit/Grid/GridContainer.jsx";
 import GridItem from "../../../components/MaterialKit/Grid/GridItem.jsx";
 import InfoArea from "../../../components/MaterialKit/InfoArea/InfoArea.jsx";
-
-import productStyle
-    from "../../../components/MaterialKit/dependencies/jss/material-kit-react/views/landingPageSections/productStyle.jsx";
+import ProductSectionStyle from "../../../scss/ProductSectionStyle";
 
 class ProductSection extends React.Component {
     render() {
@@ -66,4 +61,4 @@ class ProductSection extends React.Component {
     }
 }
 
-export default withStyles(productStyle)(ProductSection);
+export default withStyles(ProductSectionStyle)(ProductSection);

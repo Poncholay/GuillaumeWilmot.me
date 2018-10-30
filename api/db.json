@@ -1,0 +1,15 @@
+{
+  "exercise": {
+    "id": "number",
+    "name": "string",
+    "image": "string"
+  },
+  "lift": {
+    "id": "number",
+    "exerciseId": "number",
+    "weight": "float",
+    "reps": "number",
+    "date": "date",
+    "image": "string", /*Optional*/
+  }
+}

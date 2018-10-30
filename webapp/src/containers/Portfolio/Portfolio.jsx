@@ -6,11 +6,11 @@ import GridContainer from "../../components/MaterialKit/Grid/GridContainer.jsx";
 import GridItem from "../../components/MaterialKit/Grid/GridItem.jsx";
 import Button from "../../components/MaterialKit/CustomButtons/Button.jsx";
 import Parallax from "../../components/MaterialKit/Parallax/Parallax.jsx";
-import landingPageStyle from "../../components/MaterialKit/dependencies/jss/material-kit-react/views/landingPage.jsx";
 import ProductSection from "./Sections/ProductSection.jsx";
 import {withRouter} from "react-router";
 import {connect} from "react-redux";
-import AppHeader from "./AppHeader/AppHeader";
+import AppHeader from "../AppHeader/AppHeader";
+import PortfolioStyle from "../../scss/PortfolioStyle";
 
 class Portfolio extends React.Component {
     render() {
@@ -59,6 +59,6 @@ function mapStateToProps(state) {
     return {};
 }
 
-const connectedPortfolio = withRouter(connect(mapStateToProps)(withStyles(landingPageStyle)(Portfolio)));
+const connectedPortfolio = withRouter(connect(mapStateToProps)(withStyles(PortfolioStyle)(Portfolio)));
 
 export {connectedPortfolio as Portfolio};

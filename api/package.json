@@ -1,0 +1,12 @@
+{
+  "name": "apioncholay",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "sqlite3": "^4.0.3"
+  },
+  "scripts": {
+    "run": "pm2 start node api.js",
+    "stop": "pm2 delete api"
+  }
+}

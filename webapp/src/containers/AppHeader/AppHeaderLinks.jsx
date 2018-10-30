@@ -3,12 +3,12 @@ import {Link} from "react-router-dom";
 import withStyles from "@material-ui/core/styles/withStyles";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
-import Tooltip from "@material-ui/core/Tooltip";
-import {Apps, CloudDownload} from "@material-ui/icons";
-import CustomDropdown from "../../../components/MaterialKit/CustomDropdown/CustomDropdown.jsx";
-import Button from "../../../components/MaterialKit/CustomButtons/Button.jsx";
+import {AccountCircle, Apps} from "@material-ui/icons";
+import CustomDropdown from "../../components/MaterialKit/CustomDropdown/CustomDropdown.jsx";
+import Button from "../../components/MaterialKit/CustomButtons/Button.jsx";
 
-import headerLinksStyle from "../../../components/MaterialKit/dependencies/jss/material-kit-react/components/headerLinksStyle.jsx";
+import headerLinksStyle
+    from "../../components/MaterialKit/dependencies/jss/material-kit-react/components/headerLinksStyle.jsx";
 
 function AppHeaderLinks({...props}) {
     const {classes} = props;
@@ -35,12 +35,12 @@ function AppHeaderLinks({...props}) {
             </ListItem>
             <ListItem className={classes.listItem}>
                 <Button
-                    href="#"
-                    color="transparent"
-                    target="_blank"
+                    href="#pablo"
                     className={classes.navLink}
+                    onClick={e => e.preventDefault()}
+                    color="transparent"
                 >
-                    <CloudDownload className={classes.icons}/> Lorem Ipsum
+                    <AccountCircle className={classes.icons}/> Profile
                 </Button>
             </ListItem>
         </List>

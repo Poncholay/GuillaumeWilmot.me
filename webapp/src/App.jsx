@@ -2,13 +2,14 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {config} from "./_helpers/index";
 import {history} from './_helpers/index';
-import './scss/App.scss';
 import NoMatch from "./containers/NoMatch";
 import {Route, Switch, withRouter} from 'react-router-dom';
 import PropTypes from 'prop-types';
 import {Portfolio} from "./containers/Portfolio/Portfolio";
 import {Powerlifting} from "./containers/Powerlifting/Powerlifting";
 import {Redirect} from "react-router";
+import withStyles from "@material-ui/core/styles/withStyles";
+import AppStyle from "./scss/AppStyle";
 
 class App extends Component {
 
@@ -47,5 +48,5 @@ App.propTypes = {
     notifications: PropTypes.array
 };
 
-const connectedApp = withRouter(connect(mapStateToProps)(App));
+const connectedApp = withRouter(connect(mapStateToProps)(withStyles(AppStyle)(App)));
 export {connectedApp as App};
