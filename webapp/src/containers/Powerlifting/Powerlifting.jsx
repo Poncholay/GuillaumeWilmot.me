@@ -10,10 +10,9 @@ import {connect} from "react-redux";
 import CustomTabs from "../../components/MaterialKit/CustomTabs/CustomTabs";
 import Timeline from "./Sections/Timeline";
 import Schedule from "./Sections/Schedule";
-import {Schedule as ScheduleIcon} from "@material-ui/icons";
+import {Schedule as ScheduleIcon, Grade as GradeIcon, Assignment as AssignmentIcon} from "@material-ui/icons";
 import BarbellIcon from "../../components/Icons/Barbell";
 import AppHeader from "../AppHeader/AppHeader";
-import MedalIcon from "../../components/Icons/Medal";
 import PersonalRecords from "./Sections/PersonalRecords";
 import PowerliftingStyle from "../../scss/PowerliftingStyle";
 
@@ -36,7 +35,7 @@ class Powerlifting extends React.Component {
                         </GridContainer>
                     </div>
                 </Parallax>
-                <div className={classNames(classes.main, classes.mainRaised)}>
+                <div className={classNames(classes.main, classes.mainRaised, classes.noSideMargin)}>
                     <CustomTabs
                         headerColor="primary"
                         tabs={[
@@ -56,14 +55,14 @@ class Powerlifting extends React.Component {
                             },
                             {
                                 tabName: "PRs",
-                                tabIcon: MedalIcon,
+                                tabIcon: GradeIcon,
                                 tabContent: (
                                     <PersonalRecords/>
                                 )
                             },
                             {
                                 tabName: "Goals",
-                                tabIcon: MedalIcon,
+                                tabIcon: AssignmentIcon,
                                 tabContent: (
                                     <PersonalRecords/>
                                 )

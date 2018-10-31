@@ -10,6 +10,7 @@ import CardBody from "../Card/CardBody.jsx";
 import CardHeader from "../Card/CardHeader.jsx";
 
 import customTabsStyle from "../dependencies/jss/material-kit-react/components/customTabsStyle.jsx";
+import CustomTabScrollButton from "../../CustomTabScrollButton";
 
 class CustomTabs extends React.Component {
     state = {
@@ -46,6 +47,9 @@ class CustomTabs extends React.Component {
                             root: classes.tabsRoot,
                             indicator: classes.displayNone
                         }}
+                        scrollable
+                        scrollButtons="on"
+                        ScrollButtonComponent={CustomTabScrollButton}
                     >
                         {tabs.map((prop, key) => {
                             let icon = {};
