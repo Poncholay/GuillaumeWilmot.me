@@ -24,7 +24,7 @@ fun Route.LiftController(liftService: LiftService) {
         }
 
         /**
-         * @returns one lift
+         * @returns one lift or null
          * @param id Id of the lift
          */
         @Location("/{id}")

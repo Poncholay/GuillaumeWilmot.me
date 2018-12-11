@@ -13,8 +13,11 @@ import io.ktor.routing.get
 import io.ktor.routing.routing
 import me.guillaumewilmot.api.controllers.ExerciseController
 import me.guillaumewilmot.api.controllers.LiftController
+import me.guillaumewilmot.api.models.Lifts
 import me.guillaumewilmot.api.models.ResponseModel
 import me.guillaumewilmot.api.services.LiftService
+import org.jetbrains.exposed.sql.SchemaUtils
+import org.jetbrains.exposed.sql.transactions.transaction
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
@@ -30,9 +33,18 @@ fun Application.module(testing: Boolean = false) {
     }
     install(Locations)
 
+    DB.connect()
+
     fun Routing.healthCheck() {
         get("/ping") {
             call.respond(ResponseModel("Olejoi !"))
+        }
+
+        get("/encule") {
+            transaction {
+                SchemaUtils.create(Lifts)
+            }
+            call.respond(ResponseModel("Ta grosse mère"))
         }
     }
 
