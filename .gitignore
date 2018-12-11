@@ -1,3 +1,11 @@
 .idea/
 webapp/node_modules/
 webapp/yarn*
+webapp/package-lock.json
+api/package-lock.json
+api/OldNodeJS/
+api/.gradle
+api/out
+api/build
+api/*.ipr
+api/*.iws

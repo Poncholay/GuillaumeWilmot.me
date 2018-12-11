@@ -17,12 +17,12 @@ class PersonalRecords extends React.Component {
         },
         {
             exercise: "Overhead press",
-            weight: 62.5,
+            weight: 65,
             date: moment().format("MMMM Do YYYY")
         },
         {
             exercise: "Deadlift",
-            weight: 145.0,
+            weight: 155.0,
             date: moment().format("MMMM Do YYYY")
         },
         {
@@ -32,7 +32,7 @@ class PersonalRecords extends React.Component {
         },
         {
             exercise: "Front squat",
-            weight: 95,
+            weight: 105,
             date: moment().format("MMMM Do YYYY")
         }
     ];
