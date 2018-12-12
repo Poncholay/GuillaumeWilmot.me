@@ -39,13 +39,6 @@ fun Application.module(testing: Boolean = false) {
         get("/ping") {
             call.respond(ResponseModel("Olejoi !"))
         }
-
-        get("/encule") {
-            transaction {
-                SchemaUtils.create(Lifts)
-            }
-            call.respond(ResponseModel("Ta grosse mère"))
-        }
     }
 
     routing {

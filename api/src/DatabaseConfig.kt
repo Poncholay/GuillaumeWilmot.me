@@ -38,14 +38,9 @@ object DB {
 
     private fun hikari(): HikariDataSource = HikariDataSource(
         HikariConfig()
-            .apply { driverClassName = "org.sqlite.SQLiteDataSource" }
+            .apply { driverClassName = "org.sqlite.JDBC" }
             .apply { jdbcUrl = "jdbc:sqlite:" + sqlitePath() }
             .apply { maximumPoolSize = 5 }
-            .apply { isAutoCommit = false }
-            .apply { transactionIsolation = "TRANSACTION_SERIALIZABLE" }
-            .apply { connectionTestQuery = "SELECT 1" }
-            .apply { maxLifetime = 60000 }
-            .apply { idleTimeout = 45000 }
             .apply { validate() }
     )
 
