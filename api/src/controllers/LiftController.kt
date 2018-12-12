@@ -14,8 +14,10 @@ import io.ktor.routing.route
 import me.guillaumewilmot.api.HTTP_200_MSG
 import me.guillaumewilmot.api.HTTP_404_MSG
 import me.guillaumewilmot.api.models.ErrorResponseModel
+import me.guillaumewilmot.api.models.LiftModel
 import me.guillaumewilmot.api.models.ResponseModel
 import me.guillaumewilmot.api.services.LiftService
+import me.guillaumewilmot.api.to
 
 @KtorExperimentalLocationsAPI
 @Suppress("FunctionName")
@@ -31,11 +33,10 @@ fun Route.LiftController(liftService: LiftService) {
 
         /**
          * @returns one lift or null
-         * @param id Id of the lift
          */
         post("/") {
             val requestBody = call.receiveText()
-            call.respond(ResponseModel(HTTP_200_MSG, requestBody))
+            call.respond(ResponseModel(HTTP_200_MSG, requestBody.to<LiftModel>()))
         }
 
         /**
