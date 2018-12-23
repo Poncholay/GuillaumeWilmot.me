@@ -12,12 +12,14 @@ import io.ktor.routing.get
 import io.ktor.routing.post
 import io.ktor.routing.route
 import me.guillaumewilmot.api.HTTP_200_MSG
+import me.guillaumewilmot.api.HTTP_400_MSG
 import me.guillaumewilmot.api.HTTP_404_MSG
 import me.guillaumewilmot.api.models.ErrorResponseModel
 import me.guillaumewilmot.api.models.LiftModel
 import me.guillaumewilmot.api.models.ResponseModel
 import me.guillaumewilmot.api.services.LiftService
 import me.guillaumewilmot.api.to
+import java.sql.SQLException
 
 @KtorExperimentalLocationsAPI
 @Suppress("FunctionName")
@@ -36,7 +38,16 @@ fun Route.LiftController(liftService: LiftService) {
          */
         post("/") {
             val requestBody = call.receiveText()
-            call.respond(ResponseModel(HTTP_200_MSG, requestBody.to<LiftModel>()))
+            requestBody.to<LiftModel>()?.let { lift ->
+                try {
+                    liftService.save(lift)?.let { new ->
+                        call.respond(ResponseModel(HTTP_200_MSG, new))
+                    }
+                } catch (e: SQLException) {
+                    call.respond(HttpStatusCode.BadRequest, ErrorResponseModel(e.message))
+                }
+            }
+            call.respond(HttpStatusCode.BadRequest, ErrorResponseModel(HTTP_400_MSG)) //TODO : error
         }
 
         /**
@@ -44,7 +55,7 @@ fun Route.LiftController(liftService: LiftService) {
          * @param id Id of the lift
          */
         @Location("/{id}")
-        data class LiftId(val id: Long)
+        data class LiftId(val id: Int)
         get<LiftId> {
             liftService.one(it.id)?.let { lift ->
                 return@get call.respond(ResponseModel(HTTP_200_MSG, lift))

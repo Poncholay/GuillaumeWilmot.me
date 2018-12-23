@@ -10,6 +10,7 @@ import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManager
 import org.jetbrains.exposed.sql.transactions.TransactionManager
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.sqlite.SQLiteConfig
 import java.io.File
 import java.sql.Connection
 
@@ -19,7 +20,9 @@ object DB {
     private val repetitions = TransactionManager.manager.defaultRepetitionAttempts
 
     suspend fun <T> query(block: () -> T): T = withContext(Dispatchers.IO) {
-        transaction(db) { block() }
+        transaction(db) {
+            block()
+        }
     }
 
     fun connect() {
@@ -42,6 +45,7 @@ object DB {
             .apply { jdbcUrl = "jdbc:sqlite:" + sqlitePath() }
             .apply { maximumPoolSize = 5 }
             .apply { validate() }
+            .apply { dataSourceProperties = SQLiteConfig().apply { enforceForeignKeys(true) }.toProperties() }
     )
 
     @Throws
