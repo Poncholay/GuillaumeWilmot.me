@@ -9,14 +9,13 @@ import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.selectAll
 
-class LiftService {
+object LiftService {
     /**
      * Gets all lifts
      * @return lift list or null
      */
     suspend fun all(): List<LiftModel> = DB.query {
-        Lifts
-            .selectAll()
+        Lifts.selectAll()
             .mapNotNull { LiftModel.fromRow(it) }
     }
 
@@ -25,8 +24,7 @@ class LiftService {
      * @return lift or null
      */
     suspend fun one(id: Int): LiftModel? = DB.query {
-        Lifts
-            .select { (Lifts.id eq id) }
+        Lifts.select { (Lifts.id eq id) }
             .mapNotNull { LiftModel.fromRow(it) }
             .singleOrNull()
     }

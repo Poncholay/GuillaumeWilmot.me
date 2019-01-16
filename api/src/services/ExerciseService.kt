@@ -7,14 +7,13 @@ import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.selectAll
 
-class ExerciseService {
+object ExerciseService {
     /**
      * Gets all exercises
      * @return exercise list or null
      */
     suspend fun all(): List<ExerciseModel> = DB.query {
-        Exercises
-            .selectAll()
+        Exercises.selectAll()
             .mapNotNull { ExerciseModel.fromRow(it) }
     }
 
@@ -23,8 +22,7 @@ class ExerciseService {
      * @return exercise or null
      */
     suspend fun one(id: Int): ExerciseModel? = DB.query {
-        Exercises
-            .select { (Exercises.id eq id) }
+        Exercises.select { (Exercises.id eq id) }
             .mapNotNull { ExerciseModel.fromRow(it) }
             .singleOrNull()
     }

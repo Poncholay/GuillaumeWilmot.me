@@ -23,13 +23,13 @@ import java.sql.SQLException
 
 @KtorExperimentalLocationsAPI
 @Suppress("FunctionName")
-fun Route.ExerciseController(exerciseService: ExerciseService) {
+fun Route.ExerciseController() {
     route("/exercise") {
         /**
          * @returns all exercises
          */
         get("/") {
-            val exercises = exerciseService.all()
+            val exercises = ExerciseService.all()
             call.respond(ResponseModel(HTTP_200_MSG, exercises))
         }
 
@@ -41,7 +41,7 @@ fun Route.ExerciseController(exerciseService: ExerciseService) {
             val requestBody = call.receiveText()
             requestBody.to<ExerciseModel>()?.let { exercise ->
                 try {
-                    exerciseService.save(exercise)?.let { new ->
+                    ExerciseService.save(exercise)?.let { new ->
                         call.respond(ResponseModel(HTTP_200_MSG, new))
                     }
                 } catch (e: SQLException) {
@@ -58,7 +58,7 @@ fun Route.ExerciseController(exerciseService: ExerciseService) {
         @Location("/{id}")
         data class ExerciseId(val id: Int)
         get<ExerciseId> {
-            exerciseService.one(it.id)?.let { exercise ->
+            ExerciseService.one(it.id)?.let { exercise ->
                 return@get call.respond(ResponseModel(HTTP_200_MSG, exercise))
             }
             call.respond(HttpStatusCode.NotFound, ErrorResponseModel(HTTP_404_MSG))

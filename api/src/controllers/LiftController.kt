@@ -23,13 +23,13 @@ import java.sql.SQLException
 
 @KtorExperimentalLocationsAPI
 @Suppress("FunctionName")
-fun Route.LiftController(liftService: LiftService) {
+fun Route.LiftController() {
     route("/lift") {
         /**
          * @returns all lifts
          */
         get("/") {
-            val lifts = liftService.all()
+            val lifts = LiftService.all()
             call.respond(ResponseModel(HTTP_200_MSG, lifts))
         }
 
@@ -40,7 +40,7 @@ fun Route.LiftController(liftService: LiftService) {
             val requestBody = call.receiveText()
             requestBody.to<LiftModel>()?.let { lift ->
                 try {
-                    liftService.save(lift)?.let { new ->
+                    LiftService.save(lift)?.let { new ->
                         call.respond(ResponseModel(HTTP_200_MSG, new))
                     }
                 } catch (e: SQLException) {
@@ -57,7 +57,7 @@ fun Route.LiftController(liftService: LiftService) {
         @Location("/{id}")
         data class LiftId(val id: Int)
         get<LiftId> {
-            liftService.one(it.id)?.let { lift ->
+            LiftService.one(it.id)?.let { lift ->
                 return@get call.respond(ResponseModel(HTTP_200_MSG, lift))
             }
             call.respond(HttpStatusCode.NotFound, ErrorResponseModel(HTTP_404_MSG))
