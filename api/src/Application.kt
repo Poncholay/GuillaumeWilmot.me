@@ -17,6 +17,7 @@ import io.ktor.locations.url
 import io.ktor.response.respond
 import io.ktor.routing.Routing
 import io.ktor.routing.get
+import io.ktor.routing.route
 import io.ktor.routing.routing
 import me.guillaumewilmot.api.controllers.AuthController
 import me.guillaumewilmot.api.controllers.ExerciseController
@@ -39,15 +40,8 @@ fun Application.module(testing: Boolean = false) {
     }
     install(Locations)
     install(StatusPages) {
-        exception<Throwable> { cause ->
-            call.respond(HttpStatusCode.InternalServerError, ErrorResponseModel(cause.message))
-        }
-    }
-    install(Authentication) {
-        oauth("googleOAuth") {
-            client = HttpClient(Apache)
-            providerLookup = { AuthConfig.loginProviders["google"] }
-            urlProvider = { url(AuthConfig.Login(it.name)) }
+        exception<Throwable> { e ->
+            call.respond(HttpStatusCode.InternalServerError, ErrorResponseModel(e.toString()))
         }
     }
 
@@ -61,8 +55,8 @@ fun Application.module(testing: Boolean = false) {
 
     routing {
         healthCheck()
-        AuthController()
-        LiftController()
-        ExerciseController()
+        AuthController.route(this)
+        LiftController.route(this)
+        ExerciseController.route(this)
     }
 }

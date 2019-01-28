@@ -5,17 +5,12 @@ import io.ktor.locations.KtorExperimentalLocationsAPI
 import io.ktor.locations.Location
 
 object AuthConfig {
-    @KtorExperimentalLocationsAPI
-    @Location("/auth/login/{type?}")
-    data class Login(val type: String = "")
+    data class Client(val clientId: String = "", val clientSecret: String = "")
 
-    val loginProviders = mapOf(
-        "google" to OAuthServerSettings.OAuth2ServerSettings(
-            name = "google",
-            authorizeUrl = "https://github.com/login/oauth/authorize",
-            accessTokenUrl = "https://github.com/login/oauth/access_token",
-            clientId = "***",
-            clientSecret = "***"
+    val providers = mapOf(
+        "google" to Client(
+            clientId = "294753139295-m7bsqrdj8q8gomitc54knag0rnguopf3.apps.googleusercontent.com",
+            clientSecret = "OXshERyBqV3Jq7iqBlnZRc3s"
         )
     )
 }

@@ -11,56 +11,57 @@ import io.ktor.routing.Route
 import io.ktor.routing.get
 import io.ktor.routing.post
 import io.ktor.routing.route
-import me.guillaumewilmot.api.HTTP_200_MSG
-import me.guillaumewilmot.api.HTTP_400_MSG
-import me.guillaumewilmot.api.HTTP_404_MSG
+import me.guillaumewilmot.api.MSG_HTTP_200
+import me.guillaumewilmot.api.MSG_HTTP_400
+import me.guillaumewilmot.api.MSG_HTTP_404
 import me.guillaumewilmot.api.models.ErrorResponseModel
 import me.guillaumewilmot.api.models.LiftModel
 import me.guillaumewilmot.api.models.ResponseModel
 import me.guillaumewilmot.api.services.LiftService
 import me.guillaumewilmot.api.to
-import java.sql.SQLException
 
 @KtorExperimentalLocationsAPI
 @Suppress("FunctionName")
-fun Route.LiftController() {
-    route("/lift") {
-        /**
-         * @returns all lifts
-         */
-        get("/") {
-            val lifts = LiftService.all()
-            call.respond(ResponseModel(HTTP_200_MSG, lifts))
-        }
+object LiftController {
+    fun route(router: Route) {
+        router.route("/lift") {
+            /**
+             * @returns all lifts
+             */
+            get("/") {
+                val lifts = LiftService.all()
+                call.respond(ResponseModel(MSG_HTTP_200, lifts))
+            }
 
-        /**
-         * @returns one lift or null
-         */
-        post("/") {
-            val requestBody = call.receiveText()
-            requestBody.to<LiftModel>()?.let { lift ->
-                try {
-                    LiftService.save(lift)?.let { new ->
-                        call.respond(ResponseModel(HTTP_200_MSG, new))
+            /**
+             * @returns one lift or null
+             */
+            post("/") {
+                val requestBody = call.receiveText()
+                requestBody.to<LiftModel>()?.let { lift ->
+                    try {
+                        LiftService.save(lift)?.let { new ->
+                            call.respond(ResponseModel(MSG_HTTP_200, new))
+                        }
+                    } catch (e: Exception) {
+                        call.respond(HttpStatusCode.InternalServerError, ErrorResponseModel(e.toString()))
                     }
-                } catch (e: SQLException) {
-                    call.respond(HttpStatusCode.BadRequest, ErrorResponseModel(e.message))
                 }
+                call.respond(HttpStatusCode.BadRequest, ErrorResponseModel(MSG_HTTP_400)) //TODO : error
             }
-            call.respond(HttpStatusCode.BadRequest, ErrorResponseModel(HTTP_400_MSG)) //TODO : error
-        }
 
-        /**
-         * @returns one lift or null
-         * @param id Id of the lift
-         */
-        @Location("/{id}")
-        data class LiftId(val id: Int)
-        get<LiftId> {
-            LiftService.one(it.id)?.let { lift ->
-                return@get call.respond(ResponseModel(HTTP_200_MSG, lift))
+            /**
+             * @returns one lift or null
+             * @param id Id of the lift
+             */
+            @Location("/{id}")
+            data class LiftId(val id: Int)
+            get<LiftId> {
+                LiftService.one(it.id)?.let { lift ->
+                    return@get call.respond(ResponseModel(MSG_HTTP_200, lift))
+                }
+                call.respond(HttpStatusCode.NotFound, ErrorResponseModel(MSG_HTTP_404))
             }
-            call.respond(HttpStatusCode.NotFound, ErrorResponseModel(HTTP_404_MSG))
         }
     }
 }
