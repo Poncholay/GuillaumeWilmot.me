@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Powerlifting</string>
+    <!--Sign in-->
+    <string name="sign_in_text">Sign in</string>
+    <string name="dismiss_text">Dismiss</string>
+    <string name="success_text">Success</string>
+    <string name="or">Or</string>
+    <string name="form_text_email">Email</string>
+    <string name="form_text_password">Password</string>
+    <string name="signin_forgot_password_btn_text"><u>Forgot password</u></string>
+    <string name="signin_login_btn_text">Sign in</string>
+    <string name="signin_register_btn_text"><u>Register a new account</u></string>
+</resources>
