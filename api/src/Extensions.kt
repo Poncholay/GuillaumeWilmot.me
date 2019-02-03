@@ -1,13 +1,13 @@
 package me.guillaumewilmot.api
 
-import com.google.gson.GsonBuilder
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.google.gson.reflect.TypeToken
-import java.lang.reflect.Type
 
-inline fun <reified T> genericType(): Type = object : TypeToken<T>() {}.type
+inline fun <reified T> genericType(): Class<in T> = object : TypeToken<T>() {}.rawType
 
 inline fun <reified T> String.to(): T? = try {
-    GsonBuilder().setDateFormat("YYYY/MM/DD HH:mm").create().fromJson(this, genericType<T>())
+    ObjectMapper().registerKotlinModule().readValue(this, genericType<T>()) as T
 } catch (e: Exception) {
     e.printStackTrace()
     null

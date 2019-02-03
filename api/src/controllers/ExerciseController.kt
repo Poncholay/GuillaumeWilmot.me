@@ -14,9 +14,9 @@ import io.ktor.routing.route
 import me.guillaumewilmot.api.MSG_HTTP_200
 import me.guillaumewilmot.api.MSG_HTTP_400
 import me.guillaumewilmot.api.MSG_HTTP_404
-import me.guillaumewilmot.api.models.ErrorResponseModel
+import me.guillaumewilmot.api.models.responses.ErrorResponseModel
 import me.guillaumewilmot.api.models.ExerciseModel
-import me.guillaumewilmot.api.models.ResponseModel
+import me.guillaumewilmot.api.models.responses.ResponseModel
 import me.guillaumewilmot.api.services.ExerciseService
 import me.guillaumewilmot.api.to
 

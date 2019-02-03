@@ -13,9 +13,10 @@ import io.ktor.routing.Route
 import io.ktor.routing.post
 import io.ktor.routing.route
 import me.guillaumewilmot.api.*
-import me.guillaumewilmot.api.models.ErrorResponseModel
-import me.guillaumewilmot.api.models.ResponseModel
+import me.guillaumewilmot.api.models.responses.ErrorResponseModel
+import me.guillaumewilmot.api.models.responses.ResponseModel
 import me.guillaumewilmot.api.models.forms.GoogleAuthModel
+import me.guillaumewilmot.api.models.responses.SigninResponseModel
 import java.util.*
 
 @KtorExperimentalLocationsAPI
@@ -31,13 +32,13 @@ object AuthController {
                 //TODO : Register him or log him in
                 val userId = payload.subject
                 val email = payload["email"]
-                val emailVerified = java.lang.Boolean.valueOf(payload["emailVerified"] as String)
+                val emailVerified = payload["emailVerified"] == "true"
                 val name = payload["name"] as String
                 val pictureUrl = payload["picture"] as String
                 val locale = payload["locale"] as String
                 val familyName = payload["family_name"] as String
                 val givenName = payload["given_name"] as String
-                return ""
+                return "coucou"
             }
 
             /**
@@ -48,15 +49,22 @@ object AuthController {
                 val requestBody = call.receiveText()
                 requestBody.to<GoogleAuthModel>()?.let { auth ->
                     try {
-                        val idToken = GoogleIdTokenVerifier.Builder(ApacheHttpTransport(), JacksonFactory())
-                            .setAudience(Collections.singletonList(AuthConfig.providers["Google"]?.clientId))
+                        val veryfierAndroid = GoogleIdTokenVerifier.Builder(ApacheHttpTransport(), JacksonFactory())
+                            .setAudience(Arrays.asList(AuthConfig.providers["google"]?.clientId))
+                            .setIssuer("https://accounts.google.com")
+                            .setAcceptableTimeSkewSeconds(1L)
                             .build()
-                            .verify(auth.idToken)
+                        val veryfierOther = GoogleIdTokenVerifier.Builder(ApacheHttpTransport(), JacksonFactory())
+                            .setAudience(Arrays.asList(AuthConfig.providers["google"]?.clientId))
+                            .setIssuer("accounts.google.com")
+                            .setAcceptableTimeSkewSeconds(1L)
+                            .build()
+                        val idToken = veryfierAndroid.verify(auth.idToken) ?: veryfierOther.verify(auth.idToken)
                         if (idToken != null) {
                             val payload = idToken.payload
-                            if (payload != null && "guillaumewilmot.me" == payload.hostedDomain) {
+                            if (payload != null) {
                                 val accessToken = loginOrRegister(payload)
-                                call.respond(ResponseModel(MSG_LOGIN_SUCCESS, accessToken))
+                                call.respond(ResponseModel(MSG_LOGIN_SUCCESS, SigninResponseModel(accessToken)))
                                 return@post
                             }
                         }

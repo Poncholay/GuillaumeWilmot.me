@@ -5,4 +5,4 @@
 *.iml
 *.ipr
 *.iws
-/resources/GuillaumeWilmot-081c2374f5db.json
+/src/AuthConfig.kt
