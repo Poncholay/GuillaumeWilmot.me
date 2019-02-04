@@ -32,12 +32,10 @@ object AuthController {
                 //TODO : Register him or log him in
                 val userId = payload.subject
                 val email = payload["email"]
-                val emailVerified = payload["emailVerified"] == "true"
-                val name = payload["name"] as String
                 val pictureUrl = payload["picture"] as String
-                val locale = payload["locale"] as String
                 val familyName = payload["family_name"] as String
                 val givenName = payload["given_name"] as String
+                
                 return "coucou"
             }
 

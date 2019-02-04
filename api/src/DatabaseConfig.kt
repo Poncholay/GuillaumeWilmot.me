@@ -4,7 +4,9 @@ import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import me.guillaumewilmot.api.models.Exercises
 import me.guillaumewilmot.api.models.Lifts
+import me.guillaumewilmot.api.models.Users
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManager
@@ -36,6 +38,8 @@ object DB {
     private fun migrate() {
         transaction(db) {
             SchemaUtils.create(Lifts)
+            SchemaUtils.create(Exercises)
+            SchemaUtils.create(Users)
         }
     }
 
