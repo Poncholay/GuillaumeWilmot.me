@@ -15,6 +15,7 @@ import io.ktor.routing.route
 import me.guillaumewilmot.api.MSG_HTTP_200
 import me.guillaumewilmot.api.MSG_HTTP_400
 import me.guillaumewilmot.api.MSG_HTTP_404
+import me.guillaumewilmot.api.middlewares.AuthMiddleware
 import me.guillaumewilmot.api.models.LiftModel
 import me.guillaumewilmot.api.models.responses.ErrorResponseModel
 import me.guillaumewilmot.api.models.responses.ResponseModel
@@ -71,9 +72,9 @@ object LiftController {
             /**
              * ROUTES
              */
-            get("/") { all(call) }
-            post("/") { create(call) }
-            get<LiftId> { one(call, it) }
+            get("/") { AuthMiddleware.run(call); all(call) }
+            post("/") { AuthMiddleware.run(call); create(call) }
+            get<LiftId> { AuthMiddleware.run(call); one(call, it) }
         }
     }
 }

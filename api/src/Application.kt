@@ -14,6 +14,7 @@ import io.ktor.routing.Routing
 import io.ktor.routing.get
 import io.ktor.routing.routing
 import io.ktor.sessions.SessionStorageMemory
+import io.ktor.sessions.SessionTransportTransformer
 import io.ktor.sessions.Sessions
 import io.ktor.sessions.header
 import me.guillaumewilmot.api.controllers.AuthController
@@ -39,11 +40,27 @@ fun Application.module(testing: Boolean = false) {
     install(Locations)
     install(StatusPages) {
         exception<Throwable> { e ->
-            call.respond(HttpStatusCode.InternalServerError, ErrorResponseModel(e.toString()))
+            when (e) {
+                is me.guillaumewilmot.api.models.exceptions.HttpException -> call.respond(
+                    e.code,
+                    ErrorResponseModel(e.message)
+                )
+                else -> call.respond(HttpStatusCode.InternalServerError, ErrorResponseModel(e.toString()))
+            }
         }
     }
     install(Sessions) {
-        header<SessionModel>("Authorization", SessionStorageMemory()) {}
+        header<SessionModel>("Authorization", SessionStorageMemory()) {
+            transform(object : SessionTransportTransformer {
+                override fun transformRead(transportValue: String): String? {
+                    return transportValue.removePrefix("Bearer ")
+                }
+
+                override fun transformWrite(transportValue: String): String {
+                    return "Bearer $transportValue"
+                }
+            })
+        }
     }
 
     DB.connect()

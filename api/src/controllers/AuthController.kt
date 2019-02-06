@@ -13,17 +13,16 @@ import io.ktor.response.respond
 import io.ktor.routing.Route
 import io.ktor.routing.post
 import io.ktor.routing.route
+import io.ktor.sessions.clear
 import io.ktor.sessions.sessions
 import io.ktor.sessions.set
-import me.guillaumewilmot.api.AuthConfig
-import me.guillaumewilmot.api.ERROR_INVALID_ID_TOKEN
-import me.guillaumewilmot.api.MSG_HTTP_400
+import me.guillaumewilmot.api.*
 import me.guillaumewilmot.api.models.SessionModel
 import me.guillaumewilmot.api.models.UserModel
 import me.guillaumewilmot.api.models.forms.GoogleAuthModel
 import me.guillaumewilmot.api.models.responses.ErrorResponseModel
+import me.guillaumewilmot.api.models.responses.ResponseModel
 import me.guillaumewilmot.api.services.UserService
-import me.guillaumewilmot.api.to
 import java.time.Instant
 import java.util.*
 
@@ -74,7 +73,7 @@ object AuthController {
                             if (payload != null) {
                                 val user = getOrRegister(payload)
                                 call.sessions.set(SessionModel(Instant.now().plusSeconds(3600).toEpochMilli(), user.id))
-                                call.respond(HttpStatusCode.NoContent)
+                                call.respond(ResponseModel(MSG_LOGIN_SUCCESS, user))
                                 return
                             }
                         }
@@ -88,9 +87,23 @@ object AuthController {
             }
 
             /**
+             * Deletes the user's session
+             */
+            suspend fun logout(call: ApplicationCall) {
+                call.sessions.clear<SessionModel>()
+                call.respond(HttpStatusCode.NoContent)
+            }
+
+            /**
              * ROUTES
              */
+            //TODO : remove later
+            post("/login/fake") {
+                call.sessions.set(SessionModel(1, 1))
+                call.respond(HttpStatusCode.NoContent)
+            }
             post("/login/google") { googleLogin(call) }
+            post("/logout") { logout(call) }
         }
     }
 }
