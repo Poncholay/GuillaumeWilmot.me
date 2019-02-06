@@ -1,5 +1,6 @@
 package me.guillaumewilmot.api.controllers
 
+import io.ktor.application.ApplicationCall
 import io.ktor.application.call
 import io.ktor.http.HttpStatusCode
 import io.ktor.locations.KtorExperimentalLocationsAPI
@@ -14,8 +15,8 @@ import io.ktor.routing.route
 import me.guillaumewilmot.api.MSG_HTTP_200
 import me.guillaumewilmot.api.MSG_HTTP_400
 import me.guillaumewilmot.api.MSG_HTTP_404
-import me.guillaumewilmot.api.models.responses.ErrorResponseModel
 import me.guillaumewilmot.api.models.LiftModel
+import me.guillaumewilmot.api.models.responses.ErrorResponseModel
 import me.guillaumewilmot.api.models.responses.ResponseModel
 import me.guillaumewilmot.api.services.LiftService
 import me.guillaumewilmot.api.to
@@ -26,9 +27,15 @@ object LiftController {
     fun route(router: Route) {
         router.route("/lift") {
             /**
+             * LOCATIONS
+             */
+            @Location("/{id}")
+            data class LiftId(val id: Int)
+
+            /**
              * @returns all lifts
              */
-            get("/") {
+            suspend fun all(call: ApplicationCall) {
                 val lifts = LiftService.all()
                 call.respond(ResponseModel(MSG_HTTP_200, lifts))
             }
@@ -36,7 +43,7 @@ object LiftController {
             /**
              * @returns one lift or null
              */
-            post("/") {
+            suspend fun create(call: ApplicationCall) {
                 val requestBody = call.receiveText()
                 requestBody.to<LiftModel>()?.let { lift ->
                     try {
@@ -47,21 +54,26 @@ object LiftController {
                         call.respond(HttpStatusCode.InternalServerError, ErrorResponseModel(e.toString()))
                     }
                 }
-                call.respond(HttpStatusCode.BadRequest, ErrorResponseModel(MSG_HTTP_400)) //TODO : error
+                call.respond(HttpStatusCode.BadRequest, ErrorResponseModel(MSG_HTTP_400))
             }
 
             /**
              * @returns one lift or null
-             * @param id Id of the lift
+             * @param liftId Contains Id of the lift
              */
-            @Location("/{id}")
-            data class LiftId(val id: Int)
-            get<LiftId> {
-                LiftService.one(it.id)?.let { lift ->
-                    return@get call.respond(ResponseModel(MSG_HTTP_200, lift))
+            suspend fun one(call: ApplicationCall, liftId: LiftId) {
+                LiftService.one(liftId.id)?.let { lift ->
+                    return call.respond(ResponseModel(MSG_HTTP_200, lift))
                 }
                 call.respond(HttpStatusCode.NotFound, ErrorResponseModel(MSG_HTTP_404))
             }
+
+            /**
+             * ROUTES
+             */
+            get("/") { all(call) }
+            post("/") { create(call) }
+            get<LiftId> { one(call, it) }
         }
     }
 }

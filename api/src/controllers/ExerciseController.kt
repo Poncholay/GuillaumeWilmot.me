@@ -1,5 +1,6 @@
 package me.guillaumewilmot.api.controllers
 
+import io.ktor.application.ApplicationCall
 import io.ktor.application.call
 import io.ktor.http.HttpStatusCode
 import io.ktor.locations.KtorExperimentalLocationsAPI
@@ -14,8 +15,8 @@ import io.ktor.routing.route
 import me.guillaumewilmot.api.MSG_HTTP_200
 import me.guillaumewilmot.api.MSG_HTTP_400
 import me.guillaumewilmot.api.MSG_HTTP_404
-import me.guillaumewilmot.api.models.responses.ErrorResponseModel
 import me.guillaumewilmot.api.models.ExerciseModel
+import me.guillaumewilmot.api.models.responses.ErrorResponseModel
 import me.guillaumewilmot.api.models.responses.ResponseModel
 import me.guillaumewilmot.api.services.ExerciseService
 import me.guillaumewilmot.api.to
@@ -26,18 +27,23 @@ object ExerciseController {
     fun route(router: Route) {
         router.route("/exercise") {
             /**
+             * LOCATIONS
+             */
+            @Location("/{id}")
+            data class ExerciseId(val id: Int)
+
+            /**
              * @returns all exercises
              */
-            get("/") {
+            suspend fun all(call: ApplicationCall) {
                 val exercises = ExerciseService.all()
                 call.respond(ResponseModel(MSG_HTTP_200, exercises))
             }
 
             /**
              * @returns one exercise or null
-             * @param id Id of the exercise
              */
-            post("/") {
+            suspend fun create(call: ApplicationCall) {
                 val requestBody = call.receiveText()
                 requestBody.to<ExerciseModel>()?.let { exercise ->
                     try {
@@ -48,21 +54,26 @@ object ExerciseController {
                         call.respond(HttpStatusCode.InternalServerError, ErrorResponseModel(e.toString()))
                     }
                 }
-                call.respond(HttpStatusCode.BadRequest, ErrorResponseModel(MSG_HTTP_400)) //TODO : error
+                call.respond(HttpStatusCode.BadRequest, ErrorResponseModel(MSG_HTTP_400))
             }
 
             /**
              * @returns one exercise or null
-             * @param id Id of the exercise
+             * @param exerciseId Contains Id of the exercise
              */
-            @Location("/{id}")
-            data class ExerciseId(val id: Int)
-            get<ExerciseId> {
-                ExerciseService.one(it.id)?.let { exercise ->
-                    return@get call.respond(ResponseModel(MSG_HTTP_200, exercise))
+            suspend fun one(call: ApplicationCall, exerciseId: ExerciseId) {
+                ExerciseService.one(exerciseId.id)?.let { exercise ->
+                    return call.respond(ResponseModel(MSG_HTTP_200, exercise))
                 }
                 call.respond(HttpStatusCode.NotFound, ErrorResponseModel(MSG_HTTP_404))
             }
+
+            /**
+             * ROUTES
+             */
+            get("/") { all(call) }
+            post("/") { create(call) }
+            get<ExerciseId> { one(call, it) }
         }
     }
 }

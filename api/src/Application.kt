@@ -13,9 +13,13 @@ import io.ktor.response.respond
 import io.ktor.routing.Routing
 import io.ktor.routing.get
 import io.ktor.routing.routing
+import io.ktor.sessions.SessionStorageMemory
+import io.ktor.sessions.Sessions
+import io.ktor.sessions.header
 import me.guillaumewilmot.api.controllers.AuthController
 import me.guillaumewilmot.api.controllers.ExerciseController
 import me.guillaumewilmot.api.controllers.LiftController
+import me.guillaumewilmot.api.models.SessionModel
 import me.guillaumewilmot.api.models.responses.ErrorResponseModel
 import me.guillaumewilmot.api.models.responses.ResponseModel
 
@@ -37,6 +41,9 @@ fun Application.module(testing: Boolean = false) {
         exception<Throwable> { e ->
             call.respond(HttpStatusCode.InternalServerError, ErrorResponseModel(e.toString()))
         }
+    }
+    install(Sessions) {
+        header<SessionModel>("Authorization", SessionStorageMemory()) {}
     }
 
     DB.connect()
