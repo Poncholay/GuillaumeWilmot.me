@@ -99,7 +99,7 @@ object AuthController {
              */
             //TODO : remove later
             post("/login/fake") {
-                call.sessions.set(SessionModel(1, 1))
+                call.sessions.set(SessionModel(1, -1))
                 call.respond(HttpStatusCode.NoContent)
             }
             post("/login/google") { googleLogin(call) }

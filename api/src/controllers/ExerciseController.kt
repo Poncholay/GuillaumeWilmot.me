@@ -12,8 +12,8 @@ import io.ktor.routing.Route
 import io.ktor.routing.get
 import io.ktor.routing.post
 import io.ktor.routing.route
+import me.guillaumewilmot.api.ERROR_INVALID_FORM
 import me.guillaumewilmot.api.MSG_HTTP_200
-import me.guillaumewilmot.api.MSG_HTTP_400
 import me.guillaumewilmot.api.MSG_HTTP_404
 import me.guillaumewilmot.api.middlewares.AuthMiddleware
 import me.guillaumewilmot.api.models.ExerciseModel
@@ -55,7 +55,7 @@ object ExerciseController {
                         call.respond(HttpStatusCode.InternalServerError, ErrorResponseModel(e.toString()))
                     }
                 }
-                call.respond(HttpStatusCode.BadRequest, ErrorResponseModel(MSG_HTTP_400))
+                call.respond(HttpStatusCode.BadRequest, ErrorResponseModel(ERROR_INVALID_FORM))
             }
 
             /**

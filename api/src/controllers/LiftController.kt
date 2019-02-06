@@ -12,10 +12,11 @@ import io.ktor.routing.Route
 import io.ktor.routing.get
 import io.ktor.routing.post
 import io.ktor.routing.route
+import me.guillaumewilmot.api.ERROR_INVALID_FORM
 import me.guillaumewilmot.api.MSG_HTTP_200
-import me.guillaumewilmot.api.MSG_HTTP_400
 import me.guillaumewilmot.api.MSG_HTTP_404
 import me.guillaumewilmot.api.middlewares.AuthMiddleware
+import me.guillaumewilmot.api.middlewares.DataAccessCheck
 import me.guillaumewilmot.api.models.LiftModel
 import me.guillaumewilmot.api.models.responses.ErrorResponseModel
 import me.guillaumewilmot.api.models.responses.ResponseModel
@@ -55,7 +56,7 @@ object LiftController {
                         call.respond(HttpStatusCode.InternalServerError, ErrorResponseModel(e.toString()))
                     }
                 }
-                call.respond(HttpStatusCode.BadRequest, ErrorResponseModel(MSG_HTTP_400))
+                call.respond(HttpStatusCode.BadRequest, ErrorResponseModel(ERROR_INVALID_FORM))
             }
 
             /**
@@ -64,6 +65,7 @@ object LiftController {
              */
             suspend fun one(call: ApplicationCall, liftId: LiftId) {
                 LiftService.one(liftId.id)?.let { lift ->
+                    DataAccessCheck.run(call, lift.userId)
                     return call.respond(ResponseModel(MSG_HTTP_200, lift))
                 }
                 call.respond(HttpStatusCode.NotFound, ErrorResponseModel(MSG_HTTP_404))
