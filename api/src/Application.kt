@@ -13,19 +13,19 @@ import io.ktor.response.respond
 import io.ktor.routing.Routing
 import io.ktor.routing.get
 import io.ktor.routing.routing
-import io.ktor.sessions.SessionStorageMemory
-import io.ktor.sessions.SessionTransportTransformer
-import io.ktor.sessions.Sessions
-import io.ktor.sessions.header
+import io.ktor.sessions.*
+import io.ktor.util.KtorExperimentalAPI
 import me.guillaumewilmot.api.controllers.AuthController
 import me.guillaumewilmot.api.controllers.ExerciseController
 import me.guillaumewilmot.api.controllers.LiftController
 import me.guillaumewilmot.api.models.SessionModel
 import me.guillaumewilmot.api.models.responses.ErrorResponseModel
 import me.guillaumewilmot.api.models.responses.ResponseModel
+import java.io.File
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
+@KtorExperimentalAPI
 @KtorExperimentalLocationsAPI
 @Suppress("unused") // Referenced in application.conf
 @kotlin.jvm.JvmOverloads
@@ -40,6 +40,7 @@ fun Application.module(testing: Boolean = false) {
     install(Locations)
     install(StatusPages) {
         exception<Throwable> { e ->
+            e.printStackTrace()
             when (e) {
                 is me.guillaumewilmot.api.models.exceptions.HttpException -> call.respond(
                     e.code,
@@ -50,7 +51,8 @@ fun Application.module(testing: Boolean = false) {
         }
     }
     install(Sessions) {
-        header<SessionModel>("Authorization", SessionStorageMemory()) {
+        //        header<SessionModel>("Authorization", SessionStorageMemory()) {
+        header<SessionModel>("Authorization", directorySessionStorage(File("sessions"), false)) {
             transform(object : SessionTransportTransformer {
                 override fun transformRead(transportValue: String): String? {
                     return transportValue.removePrefix("Bearer ")
