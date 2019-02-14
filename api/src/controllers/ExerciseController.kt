@@ -20,7 +20,7 @@ import me.guillaumewilmot.api.models.ExerciseModel
 import me.guillaumewilmot.api.models.responses.ErrorResponseModel
 import me.guillaumewilmot.api.models.responses.ResponseModel
 import me.guillaumewilmot.api.services.ExerciseService
-import me.guillaumewilmot.api.to
+import me.guillaumewilmot.api.util.to
 
 @KtorExperimentalLocationsAPI
 @Suppress("FunctionName")

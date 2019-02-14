@@ -18,9 +18,13 @@ import io.ktor.util.KtorExperimentalAPI
 import me.guillaumewilmot.api.controllers.AuthController
 import me.guillaumewilmot.api.controllers.ExerciseController
 import me.guillaumewilmot.api.controllers.LiftController
-import me.guillaumewilmot.api.models.SessionModel
+import me.guillaumewilmot.api.controllers.UserController
+import me.guillaumewilmot.api.models.exceptions.HttpInternalErrorException
+import me.guillaumewilmot.api.models.other.SessionModel
 import me.guillaumewilmot.api.models.responses.ErrorResponseModel
 import me.guillaumewilmot.api.models.responses.ResponseModel
+import me.guillaumewilmot.api.util.to
+import me.guillaumewilmot.api.util.toJson
 import java.io.File
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
@@ -54,14 +58,19 @@ fun Application.module(testing: Boolean = false) {
         //        header<SessionModel>("Authorization", SessionStorageMemory()) {
         header<SessionModel>("Authorization", directorySessionStorage(File("sessions"), false)) {
             transform(object : SessionTransportTransformer {
-                override fun transformRead(transportValue: String): String? {
-                    return transportValue.removePrefix("Bearer ")
-                }
+                override fun transformRead(transportValue: String): String? =
+                    transportValue.removePrefix("Bearer ")
 
-                override fun transformWrite(transportValue: String): String {
-                    return "Bearer $transportValue"
-                }
+                override fun transformWrite(transportValue: String): String =
+                    "Bearer $transportValue".also { println(transportValue) }
             })
+            serializer = object : SessionSerializer {
+                override fun serialize(session: Any): String =
+                    session.toJson() ?: "".also { throw HttpInternalErrorException() }
+
+                override fun deserialize(text: String): Any =
+                    text.to<SessionModel>() ?: Any().apply { throw HttpInternalErrorException() }
+            }
         }
     }
 
@@ -75,6 +84,7 @@ fun Application.module(testing: Boolean = false) {
 
     routing {
         healthCheck()
+        UserController.route(this)
         AuthController.route(this)
         LiftController.route(this)
         ExerciseController.route(this)

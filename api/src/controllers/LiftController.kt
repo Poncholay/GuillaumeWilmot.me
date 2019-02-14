@@ -12,16 +12,20 @@ import io.ktor.routing.Route
 import io.ktor.routing.get
 import io.ktor.routing.post
 import io.ktor.routing.route
+import io.ktor.sessions.get
+import io.ktor.sessions.sessions
 import me.guillaumewilmot.api.ERROR_INVALID_FORM
 import me.guillaumewilmot.api.MSG_HTTP_200
 import me.guillaumewilmot.api.MSG_HTTP_404
 import me.guillaumewilmot.api.middlewares.AuthMiddleware
-import me.guillaumewilmot.api.middlewares.DataAccessCheck
 import me.guillaumewilmot.api.models.LiftModel
+import me.guillaumewilmot.api.models.exceptions.HttpInternalErrorException
+import me.guillaumewilmot.api.models.other.SessionModel
 import me.guillaumewilmot.api.models.responses.ErrorResponseModel
 import me.guillaumewilmot.api.models.responses.ResponseModel
 import me.guillaumewilmot.api.services.LiftService
-import me.guillaumewilmot.api.to
+import me.guillaumewilmot.api.util.DataAccessCheck
+import me.guillaumewilmot.api.util.to
 
 @KtorExperimentalLocationsAPI
 @Suppress("FunctionName")
@@ -49,6 +53,7 @@ object LiftController {
                 val requestBody = call.receiveText()
                 requestBody.to<LiftModel>()?.let { lift ->
                     try {
+                        lift.userId = call.sessions.get<SessionModel>()?.id ?: throw HttpInternalErrorException()
                         LiftService.save(lift)?.let { new ->
                             call.respond(ResponseModel(MSG_HTTP_200, new))
                         }

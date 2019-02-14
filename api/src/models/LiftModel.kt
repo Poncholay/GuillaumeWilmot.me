@@ -6,13 +6,13 @@ import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.statements.InsertStatement
 
 class LiftModel {
-    internal var id: Int = 0
-    internal var userId: Int = 0
-    internal var exerciseId: Int = 0
-    internal var weight: Float = 0.0f
-    internal var reps: Int = 0
-    internal var date: Long = 0
-    internal var imageUrl: String? = null
+    var id: Int = -1
+    var userId: Int = 0
+    var exerciseId: Int = 0
+    var weight: Float = 0.0f
+    var reps: Int = 0
+    var date: Long = 0
+    var imageUrl: String? = null
 
     companion object {
         fun fromRow(row: ResultRow): LiftModel = LiftModel()
@@ -36,6 +36,10 @@ object Lifts : Table() {
     var imageUrl = varchar("image_url", 512)
 
     fun InsertStatement<Number>.fill(lift: LiftModel) {
+        if (lift.id != -1) {
+            this[id] = lift.id
+        }
+        this[userId] = lift.userId
         this[exerciseId] = lift.exerciseId
         this[weight] = lift.weight
         this[reps] = lift.reps

@@ -5,12 +5,12 @@ import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.statements.InsertStatement
 
 class UserModel {
-    internal var id: Int = 0
-    internal var firstname: String = ""
-    internal var lastname: String = ""
-    internal var email: String = ""
-    internal var googleId: String = ""
-    internal var pictureUrl: String = ""
+    var id: Int = 0
+    var firstname: String = ""
+    var lastname: String = ""
+    var email: String = ""
+    var googleId: String = ""
+    var pictureUrl: String = ""
 
     companion object {
         fun fromRow(row: ResultRow): UserModel = UserModel()
@@ -32,6 +32,9 @@ object Users : Table() {
     var pictureUrl = varchar("picture_url", 200)
 
     fun InsertStatement<Number>.fill(user: UserModel) {
+        if (user.id != -1) {
+            this[id] = user.id
+        }
         this[Users.firstname] = user.firstname
         this[Users.lastname] = user.lastname
         this[Users.email] = user.email

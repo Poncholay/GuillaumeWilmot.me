@@ -16,13 +16,17 @@ import io.ktor.routing.route
 import io.ktor.sessions.clear
 import io.ktor.sessions.sessions
 import io.ktor.sessions.set
-import me.guillaumewilmot.api.*
-import me.guillaumewilmot.api.models.SessionModel
+import me.guillaumewilmot.api.AuthConfig
+import me.guillaumewilmot.api.ERROR_INVALID_ID_TOKEN
+import me.guillaumewilmot.api.MSG_HTTP_400
+import me.guillaumewilmot.api.MSG_LOGIN_SUCCESS
 import me.guillaumewilmot.api.models.UserModel
 import me.guillaumewilmot.api.models.forms.GoogleAuthModel
+import me.guillaumewilmot.api.models.other.SessionModel
 import me.guillaumewilmot.api.models.responses.ErrorResponseModel
 import me.guillaumewilmot.api.models.responses.ResponseModel
 import me.guillaumewilmot.api.services.UserService
+import me.guillaumewilmot.api.util.to
 import java.time.Instant
 import java.util.*
 
@@ -72,7 +76,13 @@ object AuthController {
                             val payload = idToken.payload
                             if (payload != null) {
                                 val user = getOrRegister(payload)
-                                call.sessions.set(SessionModel(Instant.now().plusSeconds(3600).toEpochMilli(), user.id))
+                                call.sessions.set(
+                                    SessionModel(
+                                        Instant.now().plusSeconds(3600).toEpochMilli(),
+                                        user.id,
+                                        user
+                                    )
+                                )
                                 call.respond(ResponseModel(MSG_LOGIN_SUCCESS, user))
                                 return
                             }
@@ -99,7 +109,7 @@ object AuthController {
              */
             //TODO : remove later
             post("/login/fake") {
-                call.sessions.set(SessionModel(1, -1))
+                call.sessions.set(SessionModel(1, -1, UserModel()))
                 call.respond(HttpStatusCode.NoContent)
             }
             post("/login/google") { googleLogin(call) }

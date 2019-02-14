@@ -5,8 +5,8 @@ import io.ktor.sessions.get
 import io.ktor.sessions.sessions
 import me.guillaumewilmot.api.ERROR_INVALID_TOKEN
 import me.guillaumewilmot.api.ERROR_NO_TOKEN
-import me.guillaumewilmot.api.models.SessionModel
 import me.guillaumewilmot.api.models.exceptions.HttpForbiddenException
+import me.guillaumewilmot.api.models.other.SessionModel
 
 object AuthMiddleware {
     fun run(call: ApplicationCall) {
