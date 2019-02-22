@@ -65,10 +65,10 @@ fun Application.module(testing: Boolean = false) {
             })
             serializer = object : SessionSerializer {
                 override fun serialize(session: Any): String =
-                    session.toJson() ?: "".also { throw HttpInternalErrorException() }
+                    session.toJson() ?: throw HttpInternalErrorException()
 
                 override fun deserialize(text: String): Any =
-                    text.to<SessionModel>() ?: Any().apply { throw HttpInternalErrorException() }
+                    text.to<SessionModel>() ?: throw HttpInternalErrorException()
             }
         }
     }

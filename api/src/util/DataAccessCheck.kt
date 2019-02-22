@@ -9,7 +9,7 @@ import me.guillaumewilmot.api.models.other.SessionModel
 
 object DataAccessCheck {
     /**
-     * Verifies the appartenance of en entity to the request's sender
+     * Verifies the belonging of an entity to the request's sender
      */
     fun run(call: ApplicationCall, dataUserId: Int) {
         if (call.sessions.get<SessionModel>()?.user?.id != dataUserId) {

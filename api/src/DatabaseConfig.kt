@@ -21,12 +21,18 @@ object DB {
     private const val isolation = Connection.TRANSACTION_SERIALIZABLE
     private val repetitions = TransactionManager.manager.defaultRepetitionAttempts
 
+    /**
+     * Runs a database query inside a transaction
+     */
     suspend fun <T> query(block: () -> T): T = withContext(Dispatchers.IO) {
         transaction(db) {
             block()
         }
     }
 
+    /**
+     * Connects to the database and creates the tables
+     */
     fun connect() {
         db = Database.connect(hikari())
         val manager = ThreadLocalTransactionManager(db, isolation, repetitions)
@@ -35,6 +41,9 @@ object DB {
         migrate()
     }
 
+    /**
+     * Creates the database tables
+     */
     private fun migrate() {
         transaction(db) {
             SchemaUtils.create(Lifts)
@@ -43,6 +52,9 @@ object DB {
         }
     }
 
+    /**
+     * Returns a configured HikariDataSource with 5 connections
+     */
     private fun hikari(): HikariDataSource = HikariDataSource(
         HikariConfig()
             .apply { driverClassName = "org.sqlite.JDBC" }
@@ -52,6 +64,10 @@ object DB {
             .apply { dataSourceProperties = SQLiteConfig().apply { enforceForeignKeys(true) }.toProperties() }
     )
 
+
+    /**
+     * Returns the path to the database
+     */
     @Throws
     private fun sqlitePath() = File("database.sqlite").apply {
         if (!exists()) {
