@@ -42,8 +42,15 @@ object LiftController {
              * @returns all lifts
              */
             suspend fun all(call: ApplicationCall) {
-                val lifts = LiftService.all()
-                call.respond(ResponseModel(MSG_HTTP_200, lifts))
+                call.respond(ResponseModel(MSG_HTTP_200, LiftService.all()))
+            }
+
+            /**
+             * @returns all user's lifts
+             */
+            suspend fun mine(call: ApplicationCall) {
+                val userId = call.sessions.get<SessionModel>()?.user?.id ?: throw HttpInternalErrorException()
+                call.respond(ResponseModel(MSG_HTTP_200, LiftService.mine(userId)))
             }
 
             /**
@@ -53,7 +60,7 @@ object LiftController {
                 val requestBody = call.receiveText()
                 requestBody.to<LiftModel>()?.let { lift ->
                     try {
-                        lift.userId = call.sessions.get<SessionModel>()?.id ?: throw HttpInternalErrorException()
+                        lift.userId = call.sessions.get<SessionModel>()?.user?.id ?: throw HttpInternalErrorException()
                         LiftService.save(lift)?.let { new ->
                             call.respond(ResponseModel(MSG_HTTP_200, new))
                         }
@@ -81,6 +88,7 @@ object LiftController {
              */
             get("/") { AuthMiddleware.run(call); all(call) }
             post("/") { AuthMiddleware.run(call); create(call) }
+            get("/mine") { AuthMiddleware.run(call); mine(call) }
             get<LiftId> { AuthMiddleware.run(call); one(call, it) }
         }
     }

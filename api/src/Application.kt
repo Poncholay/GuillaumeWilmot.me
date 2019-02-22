@@ -55,14 +55,13 @@ fun Application.module(testing: Boolean = false) {
         }
     }
     install(Sessions) {
-        //        header<SessionModel>("Authorization", SessionStorageMemory()) {
         header<SessionModel>("Authorization", directorySessionStorage(File("sessions"), false)) {
             transform(object : SessionTransportTransformer {
-                override fun transformRead(transportValue: String): String? =
-                    transportValue.removePrefix("Bearer ")
+                override fun transformRead(transportValue: String): String? = transportValue.removePrefix("Bearer ")
 
-                override fun transformWrite(transportValue: String): String =
-                    "Bearer $transportValue".also { println(transportValue) }
+                override fun transformWrite(transportValue: String): String = "Bearer $transportValue".also {
+                    println(transportValue)
+                }
             })
             serializer = object : SessionSerializer {
                 override fun serialize(session: Any): String =

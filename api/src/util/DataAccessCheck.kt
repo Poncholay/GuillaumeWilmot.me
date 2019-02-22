@@ -12,7 +12,7 @@ object DataAccessCheck {
      * Verifies the appartenance of en entity to the request's sender
      */
     fun run(call: ApplicationCall, dataUserId: Int) {
-        if (call.sessions.get<SessionModel>()?.id != dataUserId) {
+        if (call.sessions.get<SessionModel>()?.user?.id != dataUserId) {
             throw HttpForbiddenException(ERROR_FORBIDDEN)
         }
     }

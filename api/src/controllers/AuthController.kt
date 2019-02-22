@@ -76,13 +76,7 @@ object AuthController {
                             val payload = idToken.payload
                             if (payload != null) {
                                 val user = getOrRegister(payload)
-                                call.sessions.set(
-                                    SessionModel(
-                                        Instant.now().plusSeconds(3600).toEpochMilli(),
-                                        user.id,
-                                        user
-                                    )
-                                )
+                                call.sessions.set(SessionModel(Instant.now().plusSeconds(3600).toEpochMilli(), user))
                                 call.respond(ResponseModel(MSG_LOGIN_SUCCESS, user))
                                 return
                             }
@@ -107,11 +101,6 @@ object AuthController {
             /**
              * ROUTES
              */
-            //TODO : remove later
-            post("/login/fake") {
-                call.sessions.set(SessionModel(1, -1, UserModel()))
-                call.respond(HttpStatusCode.NoContent)
-            }
             post("/login/google") { googleLogin(call) }
             post("/logout") { logout(call) }
         }

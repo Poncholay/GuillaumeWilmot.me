@@ -12,7 +12,6 @@ class LiftModel {
     var weight: Float = 0.0f
     var reps: Int = 0
     var date: Long = 0
-    var imageUrl: String? = null
 
     companion object {
         fun fromRow(row: ResultRow): LiftModel = LiftModel()
@@ -22,7 +21,6 @@ class LiftModel {
             .apply { weight = row[Lifts.weight] }
             .apply { reps = row[Lifts.reps] }
             .apply { date = row[Lifts.date] }
-            .apply { imageUrl = row[Lifts.imageUrl] }
     }
 }
 
@@ -33,7 +31,6 @@ object Lifts : Table() {
     var weight = float("weight")
     var reps = integer("reps")
     var date = long("date")
-    var imageUrl = varchar("image_url", 512)
 
     fun InsertStatement<Number>.fill(lift: LiftModel) {
         if (lift.id != -1) {
@@ -44,6 +41,5 @@ object Lifts : Table() {
         this[weight] = lift.weight
         this[reps] = lift.reps
         this[date] = lift.date
-        this[imageUrl] = lift.imageUrl ?: ""
     }
 }

@@ -1,10 +1,8 @@
 package me.guillaumewilmot.api.services
 
 import me.guillaumewilmot.api.DB
-import me.guillaumewilmot.api.models.ExerciseModel
-import me.guillaumewilmot.api.models.Exercises
-import me.guillaumewilmot.api.models.Lifts
 import me.guillaumewilmot.api.models.LiftModel
+import me.guillaumewilmot.api.models.Lifts
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.selectAll
@@ -16,6 +14,15 @@ object LiftService {
      */
     suspend fun all(): List<LiftModel> = DB.query {
         Lifts.selectAll()
+            .mapNotNull { LiftModel.fromRow(it) }
+    }
+
+    /**
+     * Gets all lifts
+     * @return lift list or null
+     */
+    suspend fun mine(userId: Int): List<LiftModel> = DB.query {
+        Lifts.select { (Lifts.userId eq userId) }
             .mapNotNull { LiftModel.fromRow(it) }
     }
 

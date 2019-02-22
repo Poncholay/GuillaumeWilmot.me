@@ -7,6 +7,7 @@ import org.jetbrains.exposed.sql.statements.InsertStatement
 class ExerciseModel {
     var id: Int = 0
     var name: String = ""
+    var timesLogged: Int = 0
 
     companion object {
         fun fromRow(row: ResultRow): ExerciseModel = ExerciseModel()
