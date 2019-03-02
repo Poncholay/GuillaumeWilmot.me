@@ -13,9 +13,9 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.locations.KtorExperimentalLocationsAPI
 import io.ktor.response.respond
 import io.ktor.routing.*
-import me.guillaumewilmot.api.gateway.MSG_HTTP_404
 import me.guillaumewilmot.api.gateway.config.MicroserviceConfig
-import me.guillaumewilmot.api.gateway.models.responses.ErrorResponseModel
+import me.guillaumewilmot.api.gateway.models.responses.ResponseModel
+import me.guillaumewilmot.api.gateway.util.to
 import java.net.URL
 
 @KtorExperimentalLocationsAPI
@@ -39,9 +39,13 @@ object GatewayController {
                         url(URL("http://localhost:$port/$param"))
                         method = httpMethod
                     }
-                    return call.respond(response.status, response.readText())
+                    val content = response.readText().to<ResponseModel>()
+                    if (content != null) {
+                        return call.respond(response.status, content)
+                    }
+                    return call.respond(response.status)
                 }
-                call.respond(HttpStatusCode.NotFound, ErrorResponseModel(MSG_HTTP_404))
+                call.respond(HttpStatusCode.NotFound)
             }
 
             /**

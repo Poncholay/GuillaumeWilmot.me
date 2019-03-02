@@ -5,6 +5,7 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.locations.KtorExperimentalLocationsAPI
 import io.ktor.server.testing.handleRequest
 import io.ktor.server.testing.withTestApplication
+import me.guillaumewilmot.api.diel.module
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
