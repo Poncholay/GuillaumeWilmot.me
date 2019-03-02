@@ -1,9 +1,9 @@
 package me.guillaumewilmot.api.diel.services
 
-import me.guillaumewilmot.api.gateway.DB
 import me.guillaumewilmot.api.diel.models.ExerciseModel
 import me.guillaumewilmot.api.diel.models.Exercises
 import me.guillaumewilmot.api.diel.models.Lifts
+import me.guillaumewilmot.api.gateway.config.DB
 import org.jetbrains.exposed.sql.*
 
 object ExerciseService {
@@ -13,9 +13,9 @@ object ExerciseService {
      */
     suspend fun all(): List<ExerciseModel> = DB.query {
         (Exercises leftJoin Lifts).slice(*Exercises.fields.toTypedArray(), Lifts.exerciseId.count())
-            .selectAll()
-            .groupBy(Exercises.id)
-            .mapNotNull { ExerciseModel.fromRow(it).apply { timesLogged = it[Lifts.exerciseId.count()] } }
+                .selectAll()
+                .groupBy(Exercises.id)
+                .mapNotNull { ExerciseModel.fromRow(it).apply { timesLogged = it[Lifts.exerciseId.count()] } }
     }
 
     /**
@@ -24,10 +24,10 @@ object ExerciseService {
      */
     suspend fun one(id: Int): ExerciseModel? = DB.query {
         (Exercises leftJoin Lifts).slice(*Exercises.fields.toTypedArray(), Lifts.exerciseId.countDistinct())
-            .select { (Exercises.id eq id) }
-            .groupBy(Exercises.id)
-            .mapNotNull { ExerciseModel.fromRow(it).apply { timesLogged = it[Lifts.exerciseId.count()] } }
-            .singleOrNull()
+                .select { (Exercises.id eq id) }
+                .groupBy(Exercises.id)
+                .mapNotNull { ExerciseModel.fromRow(it).apply { timesLogged = it[Lifts.exerciseId.count()] } }
+                .singleOrNull()
     }
 
     /**

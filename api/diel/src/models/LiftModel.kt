@@ -1,5 +1,6 @@
 package me.guillaumewilmot.api.diel.models
 
+import me.guillaumewilmot.api.gateway.models.Users
 import org.jetbrains.exposed.sql.ReferenceOption
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.Table

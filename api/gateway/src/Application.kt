@@ -3,6 +3,7 @@ package me.guillaumewilmot.api.gateway
 import io.ktor.application.Application
 import io.ktor.application.call
 import io.ktor.application.install
+import io.ktor.features.CallLogging
 import io.ktor.features.ContentNegotiation
 import io.ktor.features.StatusPages
 import io.ktor.gson.gson
@@ -17,7 +18,9 @@ import io.ktor.sessions.Sessions
 import io.ktor.sessions.directorySessionStorage
 import io.ktor.sessions.header
 import io.ktor.util.KtorExperimentalAPI
-import me.guillaumewilmot.api.gateway.DB.simpleQuery
+import me.guillaumewilmot.api.gateway.controllers.GatewayController
+import me.guillaumewilmot.api.gateway.config.DB
+import me.guillaumewilmot.api.gateway.config.DB.simpleQuery
 import me.guillaumewilmot.api.gateway.controllers.AuthController
 import me.guillaumewilmot.api.gateway.controllers.UserController
 import me.guillaumewilmot.api.gateway.models.Users
@@ -27,6 +30,7 @@ import me.guillaumewilmot.api.gateway.models.responses.ResponseModel
 import me.guillaumewilmot.api.gateway.util.BearerSessionTransportTransformer
 import me.guillaumewilmot.api.gateway.util.JsonSessionSerializer
 import org.jetbrains.exposed.sql.SchemaUtils
+import org.slf4j.event.Level
 import java.io.File
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
@@ -43,8 +47,12 @@ fun Application.module(testing: Boolean = false) {
             setDateFormat("YYYY/MM/DD HH:mm")
         }
     }
+    install(CallLogging) { level = Level.INFO }
     install(Locations)
     install(StatusPages) {
+        status(HttpStatusCode.NotFound) {
+            call.respond(HttpStatusCode.NotFound, ErrorResponseModel(MSG_HTTP_404))
+        }
         exception<Throwable> { e ->
             e.printStackTrace()
             when (e) {
@@ -81,5 +89,6 @@ fun Application.module(testing: Boolean = false) {
         healthCheck()
         UserController.route(this)
         AuthController.route(this)
+        GatewayController.route(this)
     }
 }

@@ -1,6 +1,6 @@
 package me.guillaumewilmot.api.gateway.services
 
-import me.guillaumewilmot.api.gateway.DB
+import me.guillaumewilmot.api.gateway.config.DB
 import me.guillaumewilmot.api.gateway.models.UserModel
 import me.guillaumewilmot.api.gateway.models.Users
 import org.jetbrains.exposed.sql.insert

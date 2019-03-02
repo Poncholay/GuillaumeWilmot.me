@@ -1,8 +1,8 @@
 package me.guillaumewilmot.api.diel.services
 
-import me.guillaumewilmot.api.gateway.DB
 import me.guillaumewilmot.api.diel.models.LiftModel
 import me.guillaumewilmot.api.diel.models.Lifts
+import me.guillaumewilmot.api.gateway.config.DB
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.selectAll
@@ -14,7 +14,7 @@ object LiftService {
      */
     suspend fun all(): List<LiftModel> = DB.query {
         Lifts.selectAll()
-            .mapNotNull { LiftModel.fromRow(it) }
+                .mapNotNull { LiftModel.fromRow(it) }
     }
 
     /**
@@ -23,7 +23,7 @@ object LiftService {
      */
     suspend fun mine(userId: Int): List<LiftModel> = DB.query {
         Lifts.select { (Lifts.userId eq userId) }
-            .mapNotNull { LiftModel.fromRow(it) }
+                .mapNotNull { LiftModel.fromRow(it) }
     }
 
     /**
@@ -32,8 +32,8 @@ object LiftService {
      */
     suspend fun one(id: Int): LiftModel? = DB.query {
         Lifts.select { (Lifts.id eq id) }
-            .mapNotNull { LiftModel.fromRow(it) }
-            .singleOrNull()
+                .mapNotNull { LiftModel.fromRow(it) }
+                .singleOrNull()
     }
 
     /**

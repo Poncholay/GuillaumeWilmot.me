@@ -62,10 +62,10 @@ object LiftController {
                     try {
                         lift.userId = call.sessions.get<SessionModel>()?.user?.id ?: throw HttpInternalErrorException()
                         LiftService.save(lift)?.let { new ->
-                            call.respond(ResponseModel(MSG_HTTP_200, new))
+                            return call.respond(ResponseModel(MSG_HTTP_200, new))
                         }
                     } catch (e: Exception) {
-                        call.respond(HttpStatusCode.InternalServerError, ErrorResponseModel(e.toString()))
+                        return call.respond(HttpStatusCode.InternalServerError, ErrorResponseModel(e.toString()))
                     }
                 }
                 call.respond(HttpStatusCode.BadRequest, ErrorResponseModel(ERROR_INVALID_FORM))

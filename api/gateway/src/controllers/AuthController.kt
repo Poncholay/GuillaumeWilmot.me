@@ -16,10 +16,10 @@ import io.ktor.routing.route
 import io.ktor.sessions.clear
 import io.ktor.sessions.sessions
 import io.ktor.sessions.set
-import me.guillaumewilmot.api.gateway.AuthConfig
 import me.guillaumewilmot.api.gateway.ERROR_INVALID_ID_TOKEN
 import me.guillaumewilmot.api.gateway.MSG_HTTP_400
 import me.guillaumewilmot.api.gateway.MSG_LOGIN_SUCCESS
+import me.guillaumewilmot.api.gateway.config.AuthConfig
 import me.guillaumewilmot.api.gateway.models.UserModel
 import me.guillaumewilmot.api.gateway.models.forms.GoogleAuthModel
 import me.guillaumewilmot.api.gateway.models.other.SessionModel
@@ -81,9 +81,9 @@ object AuthController {
                                 return
                             }
                         }
-                        call.respond(HttpStatusCode.BadRequest, ErrorResponseModel(ERROR_INVALID_ID_TOKEN))
+                        return call.respond(HttpStatusCode.BadRequest, ErrorResponseModel(ERROR_INVALID_ID_TOKEN))
                     } catch (e: Exception) {
-                        call.respond(HttpStatusCode.InternalServerError, ErrorResponseModel(e.toString()))
+                        return call.respond(HttpStatusCode.InternalServerError, ErrorResponseModel(e.toString()))
                     }
                 } ?: run {
                     call.respond(HttpStatusCode.BadRequest, ErrorResponseModel(MSG_HTTP_400))
